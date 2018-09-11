@@ -88,7 +88,7 @@ export default new Router({
         {
             path: '/login',
             component: resolve => require(['../pages/Login.vue'], resolve),
-            meta: { title : '铂尔曼'}
+            meta: { title : '希尔顿'}
         },
         {
             path: '/404',
