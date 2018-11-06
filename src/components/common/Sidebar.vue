@@ -50,11 +50,11 @@
                         index: 'servicelist',
                         title: '客房服务'
                     },
-                    {
-                        icon: 'el-icon-menu',
-                        index: 'servicemangage',
-                        title: '服务管理'
-                    },
+                    // {
+                    //     icon: 'el-icon-menu',
+                    //     index: 'servicemangage',
+                    //     title: '服务管理'
+                    // },
                     {
                         icon: 'el-icon-setting',
                         index: 'hotel',

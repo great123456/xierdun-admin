@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-              <el-button type="primary" plain @click="addSchool">添加服务</el-button>
+              <el-button type="primary" plain @click="addSchool">添加客房</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
                 <el-table-column prop="name" label="服务名称"></el-table-column>
@@ -39,8 +39,14 @@
         <!-- 添加服务 -->
         <el-dialog title="添加服务" :visible.sync="editVisible" width="500px">
             <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="服务名称">
+                <el-form-item label="客房名称">
                     <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="客房数量">
+                    <el-input v-model="form.room_number"></el-input>
+                </el-form-item>
+                <el-form-item label="客房单价">
+                    <el-input v-model="form.room_price"></el-input>
                 </el-form-item>
             </el-form>
             <el-upload
@@ -81,7 +87,7 @@
               :headers="token"
               :file-list="fileList"
               list-type="picture">
-              <el-button size="small" type="primary">上传服务图标</el-button>
+              <el-button size="small" type="primary">上传客房图标</el-button>
               <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
             </el-upload>
             <span slot="footer" class="dialog-footer">
@@ -109,7 +115,9 @@
                 editVisible: false,
                 updateDialog: false,
                 form: {
-                    name: ''
+                    name: '',
+                    room_number: '',
+                    room_price: ''
                 },
                 deleteId: '',
                 updateId: ''
@@ -170,7 +178,9 @@
               apiServiceListAdd({
                 name: this.form.name,
                 img: this.fileList[0].response.data.url,
-                sort: 1
+                sort: 1,
+                room_number: this.form.room_number,
+                room_price: this.form.room_price
               })
               .then((res)=>{
                 if(res.code == 200){
