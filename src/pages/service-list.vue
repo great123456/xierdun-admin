@@ -11,8 +11,10 @@
               <el-button type="primary" plain @click="addSchool">添加客房</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
-                <el-table-column prop="name" label="服务名称"></el-table-column>
-                <el-table-column label="服务图标">
+                <el-table-column prop="name" label="客房名称"></el-table-column>
+                <el-table-column prop="room_number" label="客房数量"></el-table-column>
+                <el-table-column prop="room_price" label="客房单价"></el-table-column>
+                <el-table-column label="客房图片">
                   <template slot-scope="props">
                     <img :src="props.row.img" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.img)">
                   </template>
@@ -74,6 +76,12 @@
             <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item label="服务名称">
                     <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="客房数量">
+                    <el-input v-model="form.room_number"></el-input>
+                </el-form-item>
+                <el-form-item label="客房单价">
+                    <el-input v-model="form.room_price"></el-input>
                 </el-form-item>
             </el-form>
             <el-upload
@@ -163,6 +171,8 @@
             addSchool(){
               this.editVisible = true
               this.form.name = ''
+              this.form.room_number = ''
+              this.form.room_price = ''
               this.fileList = []
             },
             // 添加服务
@@ -196,6 +206,8 @@
               this.updateDialog = true
               this.updateId = row.id
               this.form.name = row.name
+              this.form.room_number = row.room_number
+              this.form.room_price = row.room_price
             },
             updateService(){
               if(this.form.name == ''){
