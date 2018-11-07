@@ -81,6 +81,11 @@
                 <el-form-item label="菜品简介">
                     <el-input type="textarea" autosize v-model="form.desc"></el-input>
                 </el-form-item>
+                <el-form-item label="是否上架">
+                    <el-switch
+                      v-model="form.type">
+                    </el-switch>
+                </el-form-item>
             </el-form>
             <el-upload
               class="upload-demo"
@@ -89,7 +94,7 @@
               :on-remove="handleRemoveMain"
               name="img"
               multiple
-              :limit="1"
+              :limit="5"
               :headers="token"
               :file-list="fileList"
               list-type="picture">
@@ -136,6 +141,11 @@
                 <el-form-item label="菜品简介">
                     <el-input type="textarea" autosize v-model="form.desc"></el-input>
                 </el-form-item>
+                <el-form-item label="是否上架">
+                    <el-switch
+                      v-model="form.type">
+                    </el-switch>
+                </el-form-item>
             </el-form>
             <el-upload
               class="upload-demo"
@@ -144,7 +154,7 @@
               :on-remove="handleRemoveMain"
               name="img"
               multiple
-              :limit="1"
+              :limit="5"
               :headers="token"
               :file-list="fileList"
               list-type="picture">
@@ -172,6 +182,7 @@
                 tableData: [],
                 cur_page: 1,
                 pageSize: 10,
+                type: 1,
                 total: 0,
                 select_cate: '',
                 select_word: '',
@@ -184,7 +195,8 @@
                     date: '',
                     time1: '',
                     time2:'',
-                    desc: ''
+                    desc: '',
+                    type: true
                 },
                 deleteId: '',
                 updateId: ''
@@ -211,6 +223,7 @@
             },
             handleChangeMain(file, fileList){
               this.fileList = fileList
+              console.log('file-list',this.fileList)
             },
             checkImage(url){
               window.open(url)
@@ -238,6 +251,9 @@
                 .then((res) => {
                     console.log('res',res.data)
                     this.tableData = res.data.list
+                    this.tableData.forEach((item)=>{
+                      item.img = item.img.split(',')[0]
+                    })
                     this.total = res.data.total
                 })
             },
@@ -246,6 +262,13 @@
                 this.$message('请先选择菜谱再添加菜品')
                 return
               }
+              this.form.name = ''
+              this.form.price = ''
+              this.form.date = ''
+              this.form.time1 = ''
+              this.form.time2 = ''
+              this.form.desc = ''
+              this.form.type = true
               this.editVisible = true
             },
             // 保存编辑
@@ -262,10 +285,15 @@
                 this.$message.error('菜品图片未上传')
                 return
               }
+              let imgArr = []
+              this.fileList.forEach(function(item){
+                imgArr.push(item.response.data.url)
+              })
               apiMenuListAdd({
                 name: this.form.name,
-                img: this.fileList[0].response.data.url,
+                img: imgArr.join(','),
                 sort: 1,
+                type: this.form.type?1:0,
                 begin: this.form.time1,
                 end: this.form.time2,
                 before: this.form.date,
@@ -300,6 +328,7 @@
                   this.form.date = res.data.before
                   this.form.time1 = res.data.begin
                   this.form.time2 = res.data.end
+                  this.form.type = res.data.type == 1?true:false
                 }
               })
             },
@@ -316,11 +345,16 @@
                 this.$message.error('菜品图片未上传')
                 return
               }
+              let imgArr = []
+              this.fileList.forEach(function(item){
+                imgArr.push(item.response.data.url)
+              })
               apiMenuListSave({
                 id: this.updateId,
                 name: this.form.name,
-                img: this.fileList[0].response.data.url,
+                img: imgArr.join(','),
                 sort: 1,
+                type: this.form.type?1:0,
                 begin: this.form.time1,
                 end: this.form.time2,
                 before: this.form.date,

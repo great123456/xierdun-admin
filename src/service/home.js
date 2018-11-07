@@ -48,7 +48,7 @@ export const apiCookbookDelete = (obj) => fetch(API_PATH + `/cookbook/delete/${o
 export const apiMenuListAdd = (obj) => fetch(API_PATH + '/menu/store', obj, 'POST')
 
 //菜品列表
-export const apiMenuList = (obj) => fetch(API_PATH + `/menu/list/pid/${obj.id}/size/10`, obj, 'GET')
+export const apiMenuList = (obj) => fetch(API_PATH + `/menu/list/pid/${obj.id}/size/10/type/3`, obj, 'GET')
 
 //删除菜品
 export const apiMenuListDelete = (obj) => fetch(API_PATH + `/menu/delete/${obj.id}`, obj, 'DELETE')

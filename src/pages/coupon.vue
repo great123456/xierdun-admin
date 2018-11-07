@@ -13,7 +13,7 @@
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
                  <el-table-column prop="begin" label="开始日期"></el-table-column>
-                 <el-table-column prop="begin" label="结束日期"></el-table-column>
+                 <el-table-column prop="end" label="结束日期"></el-table-column>
                  <el-table-column prop="count" label="优惠券数量"></el-table-column>
                  <el-table-column prop="discount" label="折扣金额"></el-table-column>
                  <el-table-column prop="limit" label="限制使用金额"></el-table-column>
