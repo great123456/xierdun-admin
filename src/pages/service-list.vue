@@ -222,7 +222,9 @@
                 id: this.updateId,
                 name: this.form.name,
                 img: this.fileList[0].response.data.url,
-                sort: 1
+                sort: 1,
+                room_number: this.form.room_number,
+                room_price: this.form.room_price
               })
               .then((res)=>{
                 if(res.code == 200){

@@ -23,7 +23,7 @@
                 <el-table-column prop="name" label="姓名" width="120"></el-table-column>
                 <el-table-column prop="phone" label="手机号" width="200"></el-table-column>
                 <el-table-column prop="room_no" label="房间号" width="120"></el-table-column>
-                <el-table-column prop="order_no" label="身份证号码" width="200"></el-table-column>
+                <el-table-column prop="order_no" label="订单编号" width="200"></el-table-column>
                 <el-table-column prop="total" label="订单金额" width="120"></el-table-column>
                 <el-table-column prop="productName" label="商品名称" width="200"></el-table-column>
                 <el-table-column prop="productPrice" label="商品价格" width="200"></el-table-column>
@@ -48,8 +48,8 @@
                     label: '美食订单',
                     id: 1
                 },{
-                    label: '服务订单',
-                    id: 2
+                    label: '客房订单',
+                    id: 3
                 }],
                 typeId: 1,
                 tableData: [],
