@@ -127,7 +127,7 @@
               const self = this
               apiBannerList({
                 type: this.bannerType,
-                page: 1
+                page: this.cur_page
               })
               .then((res) => {
                   self.tableData = res.data.list

@@ -48,6 +48,7 @@
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
               :on-remove="handleRemoveMain"
+              :on-success="handleUploadSuccess"
               name="img"
               multiple
               :limit="1"
@@ -75,6 +76,7 @@
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
               :on-remove="handleRemoveMain"
+              :on-success="handleUploadSuccess"
               name="img"
               multiple
               :limit="1"
@@ -136,7 +138,15 @@
                 this.fileList = fileList
             },
             handleChangeMain(file, fileList){
-              this.fileList = fileList
+              //console.log('fileList')
+            },
+            handleUploadSuccess(file, fileList){
+              console.log('fie-success',fileList)
+              this.fileList = []
+              this.fileList.push({
+                name: fileList.name,
+                url: fileList.response.data.url
+              })
             },
             checkImage(url){
               window.open(url)
@@ -167,7 +177,7 @@
               }
               apiAddCookbook({
                 name: this.form.name,
-                img: this.fileList[0].response.data.url,
+                img: this.fileList[0].url,
                 sort: 1
               })
               .then((res)=>{
@@ -184,7 +194,10 @@
               this.dialogUpdate = true
               this.form.name = row.name
               this.updateId = row.id
-              this.fileList = []
+              this.fileList = [{
+                name: 'img',
+                url: row.img
+              }]
             },
             updateCookBook(){
                if(this.form.name == ''){
@@ -198,7 +211,7 @@
                apiCookbookSave({
                  id: this.updateId,
                  name: this.form.name,
-                 img: this.fileList[0].response.data.url,
+                 img: this.fileList[0].url,
                  sort: 1
                })
                .then((res)=>{

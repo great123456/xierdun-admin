@@ -30,13 +30,13 @@ export const apiAddCookbook = (obj) => fetch(API_PATH + '/cookbook/store', obj, 
 export const apiIndexListAdd = (obj) => fetch(API_PATH + '/page/store', obj, 'POST')
 
 //主页图文列表
-export const apiIndexList = (obj) => fetch(API_PATH + '/page/list/30', obj, 'GET')
+export const apiIndexList = (obj) => fetch(API_PATH + '/page/list/100', obj, 'GET')
 
 //主页图文删除
 export const apiIndexListDelete = (obj) => fetch(API_PATH + `/page/delete/${obj.id}`, obj, 'DELETE')
 
 //美食菜谱列表
-export const apiCookbookList = (obj) => fetch(API_PATH + '/cookbook/list/10', obj, 'GET')
+export const apiCookbookList = (obj) => fetch(API_PATH + '/cookbook/list/100', obj, 'GET')
 
 //菜谱修改保存
 export const apiCookbookSave = (obj) => fetch(API_PATH + '/cookbook/save', obj, 'POST')

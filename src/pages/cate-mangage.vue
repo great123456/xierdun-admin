@@ -230,7 +230,7 @@
             },
             getCookList(){
               apiCookbookList({
-                page: this.cur_page
+                page: 1
               })
               .then((res) => {
                   this.cateList = res.data.list
@@ -246,7 +246,7 @@
             getData() {
                 apiMenuList({
                   id: this.cateId,
-                  page: 1
+                  page: this.cur_page
                 })
                 .then((res) => {
                     console.log('res',res.data)

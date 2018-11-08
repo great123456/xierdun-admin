@@ -56,6 +56,7 @@
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
               :on-remove="handleRemoveMain"
+              :on-success="handleUploadSuccess"
               name="img"
               multiple
               :limit="1"
@@ -89,6 +90,7 @@
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
               :on-remove="handleRemoveMain"
+              :on-success="handleUploadSuccess"
               name="img"
               multiple
               :limit="1"
@@ -147,11 +149,19 @@
                 this.cur_page = val;
                 this.getData();
             },
-           handleRemoveMain(file, fileList) {
+            handleRemoveMain(file, fileList) {
                 this.fileList = fileList
             },
             handleChangeMain(file, fileList){
-              this.fileList = fileList
+              console.log('file-list',fileList)
+            },
+            handleUploadSuccess(file, fileList){
+              console.log('fie-success',fileList)
+              this.fileList = []
+              this.fileList.push({
+                name: fileList.name,
+                url: fileList.response.data.url
+              })
             },
             checkImage(url){
               window.open(url)
@@ -187,7 +197,7 @@
               }
               apiServiceListAdd({
                 name: this.form.name,
-                img: this.fileList[0].response.data.url,
+                img: this.fileList[0].url,
                 sort: 1,
                 room_number: this.form.room_number,
                 room_price: this.form.room_price
@@ -208,6 +218,10 @@
               this.form.name = row.name
               this.form.room_number = row.room_number
               this.form.room_price = row.room_price
+              this.fileList = [{
+                name: 'img',
+                url: row.img
+              }]
             },
             updateService(){
               if(this.form.name == ''){
@@ -221,7 +235,7 @@
               apiServiceListSave({
                 id: this.updateId,
                 name: this.form.name,
-                img: this.fileList[0].response.data.url,
+                img: this.fileList[0].url,
                 sort: 1,
                 room_number: this.form.room_number,
                 room_price: this.form.room_price
