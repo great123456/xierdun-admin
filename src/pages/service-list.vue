@@ -14,6 +14,9 @@
                 <el-table-column prop="name" label="客房名称"></el-table-column>
                 <el-table-column prop="room_number" label="客房数量"></el-table-column>
                 <el-table-column prop="room_price" label="客房单价"></el-table-column>
+                <el-table-column prop="start_at" label="开始时间"></el-table-column>
+                <el-table-column prop="end_at" label="结束时间"></el-table-column>
+                <el-table-column prop="roomStatus" label="是否满房"></el-table-column>
                 <el-table-column label="客房图片">
                   <template slot-scope="props">
                     <img :src="props.row.img" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.img)">
@@ -50,6 +53,27 @@
                 <el-form-item label="客房单价">
                     <el-input v-model="form.room_price"></el-input>
                 </el-form-item>
+                <el-form-item label="是否满房">
+                    <el-switch
+                      v-model="form.room_status">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="开始日期">
+                    <el-date-picker
+                      v-model="form.start_at"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="开始日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="结束日期">
+                    <el-date-picker
+                      v-model="form.end_at"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="结束日期">
+                    </el-date-picker>
+                </el-form-item>
             </el-form>
             <el-upload
               class="upload-demo"
@@ -83,6 +107,27 @@
                 </el-form-item>
                 <el-form-item label="客房单价">
                     <el-input v-model="form.room_price"></el-input>
+                </el-form-item>
+                <el-form-item label="是否满房">
+                    <el-switch
+                      v-model="form.room_status">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="开始日期">
+                    <el-date-picker
+                      v-model="form.start_at"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="开始日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="结束日期">
+                    <el-date-picker
+                      v-model="form.end_at"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="结束日期">
+                    </el-date-picker>
                 </el-form-item>
             </el-form>
             <el-upload
@@ -127,7 +172,10 @@
                 form: {
                     name: '',
                     room_number: '',
-                    room_price: ''
+                    room_price: '',
+                    room_status: false,
+                    start_at: '',
+                    end_at: ''
                 },
                 deleteId: '',
                 updateId: ''
@@ -172,6 +220,9 @@
                 })
                 .then((res) => {
                     this.tableData = res.data.list
+                    this.tableData.forEach((item) => {
+                      item.roomStatus = item.room_status == 1 ? '有房' :'满房'
+                    })
                     this.total = res.data.total
                 })
             },
@@ -200,7 +251,10 @@
                 img: this.fileList[0].url,
                 sort: 1,
                 room_number: this.form.room_number,
-                room_price: this.form.room_price
+                room_price: this.form.room_price,
+                room_status: this.form.room_status ? 2 : 1,
+                start_at: this.form.start_at,
+                end_at: this.form.end_at
               })
               .then((res)=>{
                 if(res.code == 200){
@@ -218,6 +272,9 @@
               this.form.name = row.name
               this.form.room_number = row.room_number
               this.form.room_price = row.room_price
+              this.form.start_at = row.start_at
+              this.form.end_at = row.end_at
+              this.form.room_status = row.room_status == 1 ? false: true
               this.fileList = [{
                 name: 'img',
                 url: row.img
@@ -238,7 +295,10 @@
                 img: this.fileList[0].url,
                 sort: 1,
                 room_number: this.form.room_number,
-                room_price: this.form.room_price
+                room_price: this.form.room_price,
+                room_status: this.form.room_status ? 2 : 1,
+                start_at: this.form.start_at,
+                end_at: this.form.end_at
               })
               .then((res)=>{
                 if(res.code == 200){
