@@ -19,7 +19,7 @@
                 <el-table-column prop="roomStatus" label="是否满房"></el-table-column>
                 <el-table-column label="客房图片">
                   <template slot-scope="props">
-                    <img :src="props.row.img" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.img)">
+                    <img :src="props.row.imgUrl" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.imgUrl)">
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -48,10 +48,13 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="客房数量">
-                    <el-input v-model="form.room_number"></el-input>
+                    <el-input v-model.number="form.room_number"></el-input>
+                </el-form-item>
+                <el-form-item label="会员价">
+                    <el-input v-model.number="form.members_price"></el-input>
                 </el-form-item>
                 <el-form-item label="客房单价">
-                    <el-input v-model="form.room_price"></el-input>
+                    <el-input v-model.number="form.room_price"></el-input>
                 </el-form-item>
                 <el-form-item label="是否满房">
                     <el-switch
@@ -83,7 +86,7 @@
               :on-success="handleUploadSuccess"
               name="img"
               multiple
-              :limit="1"
+              :limit="5"
               :headers="token"
               :file-list="fileList"
               list-type="picture">
@@ -105,6 +108,9 @@
                 <el-form-item label="客房数量">
                     <el-input v-model="form.room_number"></el-input>
                 </el-form-item>
+                <el-form-item label="会员价">
+                    <el-input v-model.number="form.members_price"></el-input>
+                </el-form-item>
                 <el-form-item label="客房单价">
                     <el-input v-model="form.room_price"></el-input>
                 </el-form-item>
@@ -138,7 +144,7 @@
               :on-success="handleUploadSuccess"
               name="img"
               multiple
-              :limit="1"
+              :limit="5"
               :headers="token"
               :file-list="fileList"
               list-type="picture">
@@ -175,7 +181,8 @@
                     room_price: '',
                     room_status: false,
                     start_at: '',
-                    end_at: ''
+                    end_at: '',
+                    members_price: ''
                 },
                 deleteId: '',
                 updateId: ''
@@ -201,14 +208,13 @@
                 this.fileList = fileList
             },
             handleChangeMain(file, fileList){
-              console.log('file-list',fileList)
+              // console.log('file-list',fileList)
             },
-            handleUploadSuccess(file, fileList){
-              console.log('fie-success',fileList)
-              this.fileList = []
+            handleUploadSuccess(response, file, fileList){
+              console.log('fileList',this.fileList)
               this.fileList.push({
                 name: fileList.name,
-                url: fileList.response.data.url
+                url: response.data.url
               })
             },
             checkImage(url){
@@ -222,6 +228,7 @@
                     this.tableData = res.data.list
                     this.tableData.forEach((item) => {
                       item.roomStatus = item.room_status == 1 ? '有房' :'满房'
+                      item.imgUrl = item.img.split(',')[0]
                     })
                     this.total = res.data.total
                 })
@@ -246,15 +253,19 @@
                 this.$message.error('服务图片未上传')
                 return
               }
+              const urls = this.fileList.map((img) => {
+                return img.url
+              })
               apiServiceListAdd({
                 name: this.form.name,
-                img: this.fileList[0].url,
+                img: urls.join(','),
                 sort: 1,
                 room_number: this.form.room_number,
                 room_price: this.form.room_price,
                 room_status: this.form.room_status ? 2 : 1,
                 start_at: this.form.start_at,
-                end_at: this.form.end_at
+                end_at: this.form.end_at,
+                members_price: this.form.members_price
               })
               .then((res)=>{
                 if(res.code == 200){
@@ -267,6 +278,7 @@
               })
             },
             handleEdit(index,row){
+              // console.log('row',row)
               this.updateDialog = true
               this.updateId = row.id
               this.form.name = row.name
@@ -275,10 +287,14 @@
               this.form.start_at = row.start_at
               this.form.end_at = row.end_at
               this.form.room_status = row.room_status == 1 ? false: true
-              this.fileList = [{
-                name: 'img',
-                url: row.img
-              }]
+              this.fileList = []
+              const self = this
+              row.img.split(',').forEach((item) => {
+                self.fileList.push({
+                  name: 'img',
+                  url: item
+                })
+              })
             },
             updateService(){
               if(this.form.name == ''){
@@ -289,16 +305,20 @@
                 this.$message.error('服务图片未上传')
                 return
               }
+              const urls = this.fileList.map((img) => {
+                return img.url
+              })
               apiServiceListSave({
                 id: this.updateId,
                 name: this.form.name,
-                img: this.fileList[0].url,
+                img: urls.join(','),
                 sort: 1,
                 room_number: this.form.room_number,
                 room_price: this.form.room_price,
                 room_status: this.form.room_status ? 2 : 1,
                 start_at: this.form.start_at,
-                end_at: this.form.end_at
+                end_at: this.form.end_at,
+                members_price: this.form.members_price
               })
               .then((res)=>{
                 if(res.code == 200){

@@ -26,7 +26,7 @@
                 <el-table-column prop="created_ata" label="菜品简介"></el-table-column> -->
                 <el-table-column label="封面图">
                   <template slot-scope="props">
-                    <img :src="props.row.img" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.img)">
+                    <img :src="props.row.imgUrl" alt="" style="width:100px;height:auto;cursor:pointer;" @click="checkImage(props.row.imgUrl)">
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -70,6 +70,14 @@
                         placeholder="选择结束时间">
                     </el-time-picker>
                 </el-form-item>
+                <el-form-item label="开始日期">
+                    <el-date-picker
+                          v-model="form.startTime"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
                 <el-form-item label="结束日期">
                     <el-date-picker
                           v-model="form.date"
@@ -92,6 +100,7 @@
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
               :on-remove="handleRemoveMain"
+              :on-success="handleUploadSuccess"
               name="img"
               multiple
               :limit="5"
@@ -130,6 +139,14 @@
                         placeholder="选择结束时间">
                     </el-time-picker>
                 </el-form-item>
+                <el-form-item label="开始日期">
+                    <el-date-picker
+                          v-model="form.startTime"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
                 <el-form-item label="结束日期">
                     <el-date-picker
                           v-model="form.date"
@@ -151,6 +168,7 @@
               class="upload-demo"
               action="/api/admin/upload/img"
               :on-change="handleChangeMain"
+              :on-success="handleUploadSuccess"
               :on-remove="handleRemoveMain"
               name="img"
               multiple
@@ -196,7 +214,8 @@
                     time1: '',
                     time2:'',
                     desc: '',
-                    type: true
+                    type: true,
+                    startTime: ''
                 },
                 deleteId: '',
                 updateId: ''
@@ -222,8 +241,14 @@
                 this.fileList = fileList
             },
             handleChangeMain(file, fileList){
-              this.fileList = fileList
-              console.log('file-list',this.fileList)
+              // this.fileList = fileList
+            },
+            handleUploadSuccess(response, file, fileList){
+              console.log('fie-success',fileList)
+              this.fileList.push({
+                name: fileList.name,
+                url: response.data.url
+              })
             },
             checkImage(url){
               window.open(url)
@@ -252,7 +277,7 @@
                     console.log('res',res.data)
                     this.tableData = res.data.list
                     this.tableData.forEach((item)=>{
-                      item.img = item.img.split(',')[0]
+                      item.imgUrl = item.img.split(',')[0]
                     })
                     this.total = res.data.total
                 })
@@ -285,9 +310,12 @@
                 this.$message.error('菜品图片未上传')
                 return
               }
-              let imgArr = []
-              this.fileList.forEach(function(item){
-                imgArr.push(item.response.data.url)
+              // let imgArr = []
+              // this.fileList.forEach(function(item){
+              //   imgArr.push(item.response.data.url)
+              // })
+              const imgArr = this.fileList.map((img) => {
+                return img.url
               })
               apiMenuListAdd({
                 name: this.form.name,
@@ -322,6 +350,7 @@
               })
               .then((res)=>{
                 if(res.code == 200){
+                  console.log('res',res)
                   this.form.name = res.data.name
                   this.form.price = res.data.price
                   this.form.desc = res.data.content
@@ -329,6 +358,14 @@
                   this.form.time1 = res.data.begin
                   this.form.time2 = res.data.end
                   this.form.type = res.data.type == 1?true:false
+                  this.fileList = []
+                  const self = this
+                  res.data.img.split(',').forEach((item) => {
+                    self.fileList.push({
+                      name: 'img',
+                      url: item
+                    })
+                  })
                 }
               })
             },
@@ -345,9 +382,12 @@
                 this.$message.error('菜品图片未上传')
                 return
               }
-              let imgArr = []
-              this.fileList.forEach(function(item){
-                imgArr.push(item.response.data.url)
+              // let imgArr = []
+              // this.fileList.forEach(function(item){
+              //   imgArr.push(item.response.data.url)
+              // })
+              const imgArr = this.fileList.map((img) => {
+                return img.url
               })
               apiMenuListSave({
                 id: this.updateId,
